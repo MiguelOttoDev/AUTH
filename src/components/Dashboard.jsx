@@ -1,4 +1,4 @@
-import Sidebar from './Sidebar';
+import Sidebar from './SideBar';
 import ContentSection from './ContentSection';
 import Header from './Header'
 const Dashboard = () => {
