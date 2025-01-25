@@ -1,5 +1,4 @@
-// src/components/Login.js
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -16,9 +15,7 @@ export default function Login() {
     try {
       const response = await fetch('https://apiauth-production-366f.up.railway.app/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
 
@@ -27,13 +24,22 @@ export default function Login() {
       if (!response.ok) {
         setError(data.message);
       } else {
-        login();
+        login(); // Salva o estado no contexto e no localStorage
         navigate('/dashboard');
       }
     } catch (error) {
       setError(`Erro ao fazer login ${error.message}`);
     }
   };
+
+  // Forçar uma verificação de login quando o componente for montado
+  useEffect(() => {
+    const storedAuth = localStorage.getItem('isAuthenticated');
+    if (storedAuth === 'true') {
+      login(); // Chama login se já estiver autenticado no localStorage
+      navigate('/dashboard');
+    }
+  }, [login, navigate]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900">
@@ -67,8 +73,7 @@ export default function Login() {
           {error && <div className="text-red-500">{error}</div>}
           <button type="submit" className="w-full px-4 py-2 font-bold text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:bg-blue-800 focus:ring focus:ring-blue-500">Login</button>
         </form>
-        <p className="text-sm text-center text-gray-400">Ainda não tem uma conta? <a href="/signup" className="text-blue-500 hover:underline">Login</a></p>
-
+        <p className="text-sm text-center text-gray-400">Ainda não tem uma conta? <a href="/signup" className="text-blue-500 hover:underline">SignUp</a></p>
       </div>
     </div>
   );
